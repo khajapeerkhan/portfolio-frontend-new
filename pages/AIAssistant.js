@@ -25,7 +25,7 @@ export default function AIAssistant() {
         selector: "#webchat",
         configuration: {
           version: "v2",
-          botName: "Khan's-AI", // keep clean name
+          botName: "Khan's-AI  🤖", // keep clean name
           botDescription: "",
           color: "#1E90FF",
           variant: "solid",

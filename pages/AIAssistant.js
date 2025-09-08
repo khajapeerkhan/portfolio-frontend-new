@@ -25,7 +25,7 @@ export default function AIAssistant() {
         selector: "#webchat",
         configuration: {
           version: "v2",
-          botName: "Khajapeer Khan's-🤖", // keep clean name
+          botName: "Khan's-AI", // keep clean name
           botDescription: "",
           color: "#1E90FF",
           variant: "solid",
@@ -41,21 +41,6 @@ export default function AIAssistant() {
 
       window.botpress.on("webchat:ready", () => {
         window.botpress.open();
-
-        // Replace avatar content with 🤖 emoji
-        const avatarInterval = setInterval(() => {
-          const avatar = document.querySelector(
-            "#webchat .bpHeader .bpAvatar span"
-          );
-          if (avatar) {
-            avatar.textContent = "🤖";
-            avatar.style.fontSize = "24px";
-            avatar.style.display = "flex";
-            avatar.style.alignItems = "center";
-            avatar.style.justifyContent = "center";
-            clearInterval(avatarInterval);
-          }
-        }, 300);
       });
     }
   }, [isBotpressLoaded]);
@@ -79,4 +64,16 @@ export default function AIAssistant() {
         #webchat .bpWebchat {
           position: absolute !important;
           top: 0 !important;
- 
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          border-radius: 12px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
+    </div>
+  );
+}

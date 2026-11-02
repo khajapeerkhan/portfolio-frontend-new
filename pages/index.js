@@ -10,7 +10,7 @@ export async function getServerSideProps() {
   const skills = await client.fetch(`*[_type == "skill"]`);
   const projects = await client.fetch(`*[_type == "project"]`);
   const education = await client.fetch(`*[_type == "education"]`);
-  const certifications = await client.fetch(`*[_type == "certification"]`);
+  const products = await client.fetch(`*[_type == "product"] | order(_createdAt desc)`);
 
   return {
     props: {
@@ -19,7 +19,7 @@ export async function getServerSideProps() {
       skills,
       projects,
       education,
-      certifications,
+      products,
     },
   };
 }
@@ -30,7 +30,7 @@ export default function Home({
   skills,
   projects,
   education,
-  certifications,
+  products = [],
 }) {
   const [offsetY, setOffsetY] = useState(0);
 
@@ -257,13 +257,13 @@ export default function Home({
           </div>
         </motion.section>
 
-        {/* Education & Certifications */}
+        {/* Education */}
         <motion.section className="mb-20" initial="hidden" animate="visible" variants={fadeLeft}>
           <h2 className="text-4xl font-serif font-bold text-purple-300 mb-6 border-b border-purple-500 pb-2 glow-text">Education</h2>
           <div className="space-y-6">
             {education.map((edu, idx) => (
               <motion.div
-                key={idx}
+                key={edu._id || idx}
                 className="bg-gray-800 shadow-lg p-6 rounded-xl hover:scale-105 transition-transform duration-500"
                 whileHover={{ scale: 1.05 }}
                 initial={{ opacity: 0, x: -50 }}
@@ -276,24 +276,58 @@ export default function Home({
               </motion.div>
             ))}
           </div>
+        </motion.section>
 
-          <h2 className="text-4xl font-serif font-bold text-purple-300 mt-16 mb-6 border-b border-purple-500 pb-2 glow-text">Certifications</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {certifications.map((cert, idx) => (
-              <motion.div
-                key={idx}
-                className="bg-gray-800 border-l-4 border-purple-500 shadow-lg p-6 rounded-xl hover:scale-105 transition-transform duration-500"
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-              >
-                <h3 className="text-lg font-semibold text-purple-300">{cert.title}</h3>
-                <p className="text-gray-400">{cert.provider}</p>
-                <span className="text-gray-500 text-sm">{cert.year}</span>
-              </motion.div>
-            ))}
-          </div>
+        {/* Products */}
+        <motion.section className="mb-20" initial="hidden" animate="visible" variants={fadeRight}>
+          <h2 className="text-4xl font-serif font-bold text-purple-300 mb-6 border-b border-purple-500 pb-2 glow-text">
+            Products
+          </h2>
+          {products.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-8">
+              {products.map((product, idx) => (
+                <motion.article
+                  key={product._id || idx}
+                  className="bg-gray-800 shadow-lg p-6 rounded-xl border border-purple-500/30 hover:scale-[1.02] transition-transform duration-500"
+                  whileHover={{ scale: 1.02 }}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: idx * 0.15 }}
+                >
+                  {product.image && (
+                    <img
+                      src={urlFor(product.image).width(1000).url()}
+                      alt={product.title || "Product"}
+                      className="rounded-lg w-full max-h-56 object-cover mb-4"
+                    />
+                  )}
+                  <h3 className="text-xl font-semibold text-purple-300 mb-2">{product.title}</h3>
+                  {product.description && (
+                    <p className="text-gray-300 text-sm mb-4 whitespace-pre-line">{product.description}</p>
+                  )}
+                  {Array.isArray(product.features) && product.features.length > 0 && (
+                    <ul className="list-disc ml-5 space-y-1 text-gray-300 text-sm mb-4">
+                      {product.features.map((feature, featureIndex) => (
+                        <li key={featureIndex}>{feature}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {product.websiteUrl && (
+                    <a
+                      href={product.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block text-blue-400 hover:underline text-sm"
+                    >
+                      Visit Product
+                    </a>
+                  )}
+                </motion.article>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400 text-sm">Products will appear here soon.</p>
+          )}
         </motion.section>
 
         {/* AI Assistant */}
